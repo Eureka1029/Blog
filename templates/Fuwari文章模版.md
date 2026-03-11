@@ -1,9 +1,9 @@
 ---
-title: 机器学习的概念
+title:
 published: 2026-03-11
-description: 记录关于机器学习的基础概念
-image: ''
-tags: [机器学习, 笔记]
+description: 记录
+image: ""
+tags:
 category: 机器学习
 draft: false
 ---

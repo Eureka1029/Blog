@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/机器学习/机器学习概念.md",
+                "file": "src/content/posts/机器学习概念.md",
                 "mode": "source",
                 "source": false
               },
@@ -186,11 +186,17 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/assets/images/touxiang.jpg",
+    "src/assets/images/微信图片_20260311163139_195_8.jpg",
     "templates/Fuwari文章模版.md",
-    "src/content/posts/机器学习/机器学习概念.md",
-    "src/content/posts/机器学习/机器学习的概念.md",
+    "2026-03-11.md",
+    "src/content/posts/机器学习概念.md",
+    "src/content/posts/markdown-extended.md",
+    "src/content/posts/markdown.md",
     "src/content/posts/guide/index.md",
     "src/content/posts/guide/cover.jpeg",
+    "src/content/posts/机器学习/机器学习概念.md",
+    "src/content/posts/机器学习/机器学习的概念.md",
     "src/content/posts/expressive-code.md",
     "src/content/posts/draft.md",
     "src/content/posts/机器学习",
@@ -206,7 +212,6 @@
     "public/favicon/favicon-dark-32.png",
     "README.md",
     "src/content/spec/about.md",
-    "src/content/posts/video.md",
-    "src/content/posts/markdown-extended.md"
+    "src/content/posts/video.md"
   ]
 }
