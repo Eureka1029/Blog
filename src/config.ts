@@ -58,7 +58,7 @@ export const profileConfig: ProfileConfig = {
   links: [
     {
       name: 'GitHub',
-      icon: 'https://api.iconify.design/logos:github-icon.svg',
+      icon: 'fa6-brands:github',
       url: 'https://github.com/Eureka1029',
     },
   ],
