@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/00 机器学习概念.md",
+                "file": "src/content/posts/机器学习/00 机器学习概念.md",
                 "mode": "source",
                 "source": false
               },
@@ -185,11 +185,12 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "aecdac5a90e79aee",
+  "active": "0b6f96d42f23c850",
   "lastOpenFiles": [
-    "src/images/Pasted image 20260311180934.png",
+    "src/content/posts/机器学习",
     "src/content/spec/about.md",
-    "src/content/posts/00 机器学习概念.md",
+    "src/content/posts/机器学习/00 机器学习概念.md",
+    "src/images/Pasted image 20260311180934.png",
     "src/images/Pasted image 20260311173650.png",
     "src/images/Pasted image 20260311165751.png",
     "src/assets/images/touxiang.jpg",
@@ -212,7 +213,6 @@
     "src/assets/images/demo-banner.png",
     "public/favicon/favicon-light-192.png",
     "public/favicon/favicon-light-32.png",
-    "public/favicon/favicon-dark-180.png",
     "README.md",
     "src/content/posts/video.md"
   ]
