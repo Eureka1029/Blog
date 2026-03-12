@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/机器学习概念.md",
+                "file": "src/content/posts/机器学习/机器学习概念.md",
                 "mode": "source",
                 "source": false
               },
@@ -187,6 +187,10 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/components/CustomHero.astro",
+    "src/content/spec/about.md",
+    "src/content/posts/机器学习/机器学习概念.md",
+    "src/content/posts/机器学习",
     "src/images/Pasted image 20260312093138.png",
     "src/images/Pasted image 20260312093121.png",
     "src/images/Pasted image 20260312093047.png",
@@ -197,10 +201,7 @@
     "src/images/Pasted image 20260312092501.png",
     "src/images/Pasted image 20260311173650.png",
     "src/images/Pasted image 20260311165751.png",
-    "src/content/posts/机器学习概念.md",
-    "src/assets/images/demo-banner.png",
     "src/content/posts/机器学习",
-    "src/content/spec/about.md",
     "templates/Fuwari文章模版.md",
     "2026-03-11.md",
     "src/content/posts/markdown-extended.md",
