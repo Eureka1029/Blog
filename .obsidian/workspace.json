@@ -185,14 +185,19 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "0b6f96d42f23c850",
+  "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/images/Pasted image 20260312092629.png",
+    "src/images/Pasted image 20260312092611.png",
+    "src/images/Pasted image 20260311180934.png",
+    "src/images/Pasted image 20260312092421.png",
+    "src/images/Pasted image 20260312092501.png",
+    "src/images/Pasted image 20260311173650.png",
     "src/images/Pasted image 20260311165751.png",
     "src/content/posts/机器学习概念.md",
+    "src/assets/images/demo-banner.png",
     "src/content/posts/机器学习",
     "src/content/spec/about.md",
-    "src/images/Pasted image 20260311180934.png",
-    "src/images/Pasted image 20260311173650.png",
     "src/assets/images/touxiang.jpg",
     "src/assets/images/微信图片_20260311163139_195_8.jpg",
     "templates/Fuwari文章模版.md",
@@ -207,11 +212,7 @@
     "src/content/posts/机器学习",
     "未命名",
     "templates",
-    "src/assets/images/demo-avatar.png",
     "src/images",
-    "src/assets/images/demo-banner.png",
-    "public/favicon/favicon-light-192.png",
-    "public/favicon/favicon-light-32.png",
     "README.md",
     "src/content/posts/video.md"
   ]

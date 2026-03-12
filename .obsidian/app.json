@@ -1,3 +1,4 @@
 {
-  "attachmentFolderPath": "src/images"
+  "attachmentFolderPath": "src/images",
+  "useMarkdownLinks": true
 }
