@@ -1,4 +1,5 @@
 {
   "attachmentFolderPath": "src/images",
-  "useMarkdownLinks": true
+  "useMarkdownLinks": true,
+  "newLinkFormat": "relative"
 }
