@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/机器学习概念.md",
+                "file": "src/content/posts/00 机器学习概念.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "机器学习概念"
+              "title": "00 机器学习概念"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "421fd14a99a05eb3",
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "templates/Fuwari文章模版.md",
+                "file": "src/content/posts/00 机器学习概念.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Fuwari文章模版 的反向链接列表"
+              "title": "00 机器学习概念 的反向链接列表"
             }
           },
           {
@@ -156,16 +156,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "templates/Fuwari文章模版.md",
+                "file": "src/content/posts/00 机器学习概念.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Fuwari文章模版 的大纲"
+              "title": "00 机器学习概念 的大纲"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -186,11 +187,15 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/images/Pasted image 20260311180934.png",
+    "src/content/spec/about.md",
+    "src/content/posts/00 机器学习概念.md",
+    "src/images/Pasted image 20260311173650.png",
+    "src/images/Pasted image 20260311165751.png",
     "src/assets/images/touxiang.jpg",
     "src/assets/images/微信图片_20260311163139_195_8.jpg",
     "templates/Fuwari文章模版.md",
     "2026-03-11.md",
-    "src/content/posts/机器学习概念.md",
     "src/content/posts/markdown-extended.md",
     "src/content/posts/markdown.md",
     "src/content/posts/guide/index.md",
@@ -208,10 +213,7 @@
     "public/favicon/favicon-light-192.png",
     "public/favicon/favicon-light-32.png",
     "public/favicon/favicon-dark-180.png",
-    "public/favicon/favicon-dark-128.png",
-    "public/favicon/favicon-dark-32.png",
     "README.md",
-    "src/content/spec/about.md",
     "src/content/posts/video.md"
   ]
 }
