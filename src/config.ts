@@ -9,14 +9,14 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
   title: 'Eureka的博客',
-  subtitle: '过去来的人',
+  subtitle: '',
   lang: 'zh_CN',         // 在这里设置你的博客语言，'en', 'zh_CN', 'zh_TW', 'ja', 'ko'
   themeColor: {
     hue: 250,         // 在这里设置你的主题色， Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
     fixed: false,     // 选择是否固定主题色，默认false
   },
   banner: {
-    enable: true,
+    enable: false,
     src: 'assets/images/demo-banner.png',   // 在这里设置你的首页横幅图片，Relative to the /src directory. Relative to the /public directory if it starts with '/'
     position: 'center',      // 在这里设置你的横幅图片位置，Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
     credit: {

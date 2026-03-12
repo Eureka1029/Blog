@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/算法/链表高频题.md",
+                "file": "src/content/posts/算法/链表高频题.md",
                 "mode": "source",
                 "source": false
               },
@@ -187,11 +187,12 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/images/截屏2026-03-12 16.29.51.png",
+    "src/content/spec/about.md",
+    "src/content/posts/算法/链表高频题.md",
     "src/images/截屏2026-03-12 15.45.23.png",
     "2026-03-11.md",
-    "src/content/算法/链表高频题.md",
-    "src/content/spec/about.md",
-    "src/content/算法",
+    "src/content/posts/算法",
     "src/content/posts/机器学习/机器学习概念.md",
     "src/components/CustomHero.astro",
     "src/content/posts/机器学习",
@@ -204,7 +205,6 @@
     "src/images/Pasted image 20260312092421.png",
     "src/images/Pasted image 20260312092501.png",
     "src/images/Pasted image 20260311173650.png",
-    "src/images/Pasted image 20260311165751.png",
     "src/content/posts/机器学习",
     "templates/Fuwari文章模版.md",
     "src/content/posts/markdown-extended.md",
