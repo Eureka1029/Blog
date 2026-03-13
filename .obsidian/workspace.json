@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/算法/链表高频题.md",
+                "file": "src/content/spec/about.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "链表高频题"
+              "title": "about"
             }
           }
         ]
@@ -187,6 +187,10 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/content/posts/机器学习/机器学习概念.md",
+    "src/content/posts/算法/链表高频题.md",
+    "src/content/spec/about.md",
+    "src/content/posts/C++入门",
     "package-lock.json",
     "node_modules/@pagefind/darwin-arm64/README.md",
     "node_modules/@pagefind/darwin-arm64/package.json",
@@ -201,8 +205,6 @@
     "node_modules/@swup/parallel-plugin/node_modules/prettier/package.json",
     "node_modules/@swup/parallel-plugin/node_modules/prettier/esm/standalone.mjs",
     "node_modules/@swup/parallel-plugin/node_modules/prettier/esm/parser-yaml.mjs",
-    "node_modules/@swup/parallel-plugin/node_modules/prettier/esm/parser-typescript.mjs",
-    "node_modules/@swup/parallel-plugin/node_modules/prettier/esm/parser-postcss.mjs",
     "node_modules/microbundle/node_modules/@rollup/plugin-commonjs/README.md",
     "node_modules/microbundle/node_modules/@rollup/plugin-commonjs/CHANGELOG.md",
     "node_modules/tailwindcss/node_modules/chokidar/README.md",
@@ -221,8 +223,6 @@
     "node_modules/postcss-nesting/node_modules/@csstools/selector-resolve-nested/README.md",
     "node_modules/postcss-nesting/node_modules/@csstools/selector-resolve-nested/LICENSE.md",
     "node_modules/postcss-nesting/node_modules/@csstools/selector-resolve-nested/CHANGELOG.md",
-    "node_modules/postcss-nesting/node_modules/postcss-selector-parser/README.md",
-    "node_modules/postcss-nesting/node_modules/postcss-selector-parser/CHANGELOG.md",
     "src/images/截屏2026-03-12 16.29.51.png",
     "src/images/截屏2026-03-12 15.45.23.png",
     "src/images/Pasted image 20260312093138.png",
