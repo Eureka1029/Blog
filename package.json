@@ -59,8 +59,7 @@
     "svelte": "^5.39.8",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
-    "unist-util-visit": "^5.0.0",
-    "remark-github-admonitions-to-directives": "latest"
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@astrojs/ts-plugin": "^1.10.6",
