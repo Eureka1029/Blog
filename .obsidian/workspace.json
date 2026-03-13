@@ -185,8 +185,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "0b6f96d42f23c850",
+  "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "public/favicon/touxiang.svg",
     "src/pages/friends.astro",
     "src/content/spec/about.md",
     "src/content/spec/friends.md",
@@ -205,7 +206,6 @@
     "node_modules/microbundle/node_modules/typescript/README.md",
     "node_modules/microbundle/node_modules/typescript/package.json",
     "node_modules/@biomejs/cli-darwin-arm64/CHANGELOG.md",
-    "node_modules/@biomejs/cli-darwin-arm64/package.json",
     "node_modules/@swup/parallel-plugin/node_modules/prettier/README.md",
     "node_modules/microbundle/node_modules/@rollup/plugin-commonjs/README.md",
     "node_modules/microbundle/node_modules/@rollup/plugin-commonjs/CHANGELOG.md",
