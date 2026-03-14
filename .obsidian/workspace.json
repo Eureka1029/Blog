@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/content/posts/算法/链表高频题.md",
+                "file": "src/content/posts/C++入门/01 C++的编译与链接.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "链表高频题"
+              "title": "01 C++的编译与链接"
             }
           }
         ]
@@ -187,10 +187,13 @@
   },
   "active": "aecdac5a90e79aee",
   "lastOpenFiles": [
+    "src/content/posts/C++入门/03 C++指针.md",
+    "src/content/posts/C++入门/02 C++头文件.md",
+    "src/content/posts/C++入门/01 C++的编译与链接.md",
+    "src/content/posts/算法/链表高频题.md",
     "src/content/spec/about.md",
     "src/content/spec/friends.md",
     "templates/Fuwari文章模版.md",
-    "src/content/posts/算法/链表高频题.md",
     "public/favicon/touxiang.svg",
     "src/pages/friends.astro",
     "src/pages/friend.astro",
@@ -221,9 +224,6 @@
     "node_modules/tailwindcss/node_modules/postcss-selector-parser/API.md",
     "node_modules/remark-directive-rehype/node_modules/hastscript/readme.md",
     "node_modules/postcss-nesting/node_modules/@csstools/selector-specificity/README.md",
-    "node_modules/postcss-nesting/node_modules/@csstools/selector-specificity/LICENSE.md",
-    "node_modules/postcss-nesting/node_modules/@csstools/selector-specificity/CHANGELOG.md",
-    "node_modules/postcss-nesting/node_modules/@csstools/selector-resolve-nested/README.md",
     "src/images/截屏2026-03-12 16.29.51.png",
     "src/images/截屏2026-03-12 15.45.23.png",
     "src/images/Pasted image 20260312093138.png",
