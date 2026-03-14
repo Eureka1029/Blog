@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "src/content/posts/00 机器学习概念.md",
+                "file": "src/content/posts/C++入门/01 C++的编译与链接.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "00 机器学习概念 的大纲"
+              "title": "01 C++的编译与链接 的大纲"
             }
           }
         ],
