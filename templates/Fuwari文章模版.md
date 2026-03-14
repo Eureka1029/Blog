@@ -1,9 +1,9 @@
 ---
 title:
-published: 2026-03-11
-description: 记录
+published:
+description:
 image: ""
 tags:
-category: 机器学习
+category:
 draft: false
 ---
