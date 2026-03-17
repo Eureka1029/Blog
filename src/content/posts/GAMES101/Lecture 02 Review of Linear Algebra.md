@@ -1,6 +1,6 @@
 ---
 title: Lecture 02 Review of Linear Algebra
-published: 2026-03-14
+published: 2026-03-17
 description: GAMES101 Lecture 2
 image: ""
 tags:
