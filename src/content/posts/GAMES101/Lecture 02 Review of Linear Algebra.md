@@ -25,7 +25,7 @@ draft: false
 
 如**a×b=c**
 四指从a的方向向b的方向握紧，大拇指指向的就是c的方向
-![](https://i0.hdslb.com/bfs/note/acdd405e8591503c0d093d0746605b0f8118be32.jpg@1192w.webp)
+![](../../../images/截屏2026-03-17%2020.42.19.png)
 
 **如何判断两个向量的左右关系？**
 a×b得到结果是和z轴同向，是正的，说明b在a的左侧
@@ -62,23 +62,23 @@ CA×CP > 0 说明P在CA左侧
 
 
 ### 矩阵乘向量
-![](https://i0.hdslb.com/bfs/note/19947ad1d796f433ad61003e7358f17c92558cad.jpg@1192w.webp)
+![](../../../images/截屏2026-03-17%2020.42.39.png)
 
 
 
 ### 矩阵的转置
-![](https://i0.hdslb.com/bfs/note/e89515f4c5b7eecd46c1ab2bc7efe1d6fc518fc1.jpg@1192w.webp)
+![](../../../images/截屏2026-03-17%2020.42.55.png)
 
 
 ### 单位矩阵、矩阵的逆
-![](https://i0.hdslb.com/bfs/note/ae7b91e261ed5f7ed7a065e45a9439b2573edaa8.jpg@1192w.webp)
+![](../../../images/截屏2026-03-17%2020.43.12.png)
 
 
 
 ### 向量的点乘、叉乘(矩阵形式)
 向量的点乘（矩阵形式）（见下图）
 向量的叉乘（矩阵形式）
-![](https://i0.hdslb.com/bfs/note/85ed6793e5c7724af366392d8820ab935af5131c.jpg@1192w.webp)
+![](../../../images/截屏2026-03-17%2020.43.24.png)
 
 
 将a向量重新组织，变为A*这个矩阵，A*这个矩阵叫a向量的**反对称矩阵（Skew-Symmetric Matrix）**
