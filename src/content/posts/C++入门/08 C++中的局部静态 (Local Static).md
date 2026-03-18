@@ -1,5 +1,5 @@
 ---
-title: "C++入门 (八) : C++中的局部静态 (Local Static)"
+title: "C++入门 : C++中的局部静态 (Local Static) 08"
 published: 2026-03-17
 description: 关于C++中的局部静态...
 image: ""
