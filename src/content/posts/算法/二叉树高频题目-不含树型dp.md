@@ -382,4 +382,123 @@ public:
 
 --- 
 
+##  从前序与中序遍历序列构造二叉树
+https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+
+> 使用递归实现
+
+```cpp
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if(preorder.empty() || inorder.empty() || inorder.size() != preorder.size()){
+            return nullptr;
+        }
+        unordered_map<int, int> mp;
+        for(int i = 0; i < inorder.size(); i++){
+            mp[inorder[i]] = i;
+        }
+        return f(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size()-1, mp);
+    }
+
+    TreeNode* f(vector<int>& preorder, int l1, int r1, vector<int>& inorder, int l2, int r2, unordered_map<int,int>& mp){
+        if(l1 > r1){
+            return nullptr;
+        }
+        TreeNode* head = new TreeNode(preorder[l1]);
+        if(l1 == r1){
+            return head;
+        }
+
+        int k = mp[preorder[l1]];
+        head->left = f(preorder, l1 + 1, l1 + k - l2, inorder, l2, k-1, mp);
+        head->right = f(preorder, l1 + k - l2 + 1, r1, inorder, k + 1, r2, mp);
+        return head;
+    }
+};
+```
+
+--- 
+##  二叉树的完全性检验
+https://leetcode.cn/problems/check-completeness-of-a-binary-tree
+
+> 在层序遍历的基础上加上对叶子节点的判断
+
+
+```cpp
+class Solution {
+public:
+    bool isCompleteTree(TreeNode* root) {
+        if(root == nullptr){
+            return true;
+        }
+        //是否遇到左右不双全的节点
+        bool leaf = false;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* cur = q.front();
+            q.pop();
+            if((cur->left == nullptr && cur->right != nullptr) || (leaf && (cur->left != nullptr || cur->right != nullptr))){
+                return false;
+            }
+            if(cur->left != nullptr){
+                q.push(cur->left);
+            }
+            if(cur->right != nullptr){
+                q.push(cur->right);
+            }
+            if(cur->left == nullptr || cur->right == nullptr){
+                leaf = true;
+            }
+        }
+        return true;
+    }
+};
+```
+
+
+---
+
+## 完全二叉树的节点个数
+https://leetcode.cn/problems/count-complete-tree-nodes/
+
+*要求时间复杂度低于O(n)*
+
+> 利用完全二叉树的个数计算公式和递归实现
+
+```cpp
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if(root == nullptr){
+            return 0;
+        }
+        return f(root, 1, mostLeft(root, 1));
+    }
+    //level代表当前所在层
+    //h代表总高
+    int f(TreeNode* cur, int level, int h){
+        if(level == h){
+            return 1;
+        }
+        if(mostLeft(cur->right, level + 1) == h){
+            // cur右树上的最左节点，扎到了最深层
+            return (1 << (h - level)) + f(cur->right, level + 1, h);
+        }else{
+            // cur右树上的最左节点，没扎到最深层
+            return (1 << (h - level - 1)) + f(cur->left, level + 1, h);
+        }
+    }
+    //看一颗子树最多能到多少层
+    int mostLeft(TreeNode* cur,int level){
+        while(cur != nullptr){
+            level++;
+            cur = cur->left;
+        }
+        return level - 1;
+    }
+};
+```
+
 
