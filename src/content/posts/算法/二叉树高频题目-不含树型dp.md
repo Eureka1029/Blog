@@ -7,7 +7,7 @@ tags:
   - 算法
   - 二叉树
 category: 算法
-draft: true
+draft: false
 ---
 ##  二叉树的层序遍历
 https://leetcode.cn/problems/binary-tree-level-order-traversal/
@@ -631,4 +631,149 @@ public:
 ```
 
 ---
+
+## 验证二叉搜索树
+https://leetcode.cn/problems/validate-binary-search-tree/description/
+
+> 法1:利用非递归中序遍历(使用栈实现),搜索树中序遍历之后应该是升序
+
+```CPP
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        if(root == nullptr){
+            return true;
+        }
+        stack<TreeNode*> st;
+        TreeNode* pre = nullptr;
+        while(!st.empty() || root != nullptr){
+            if(root != nullptr){
+                st.push(root);
+                root = root->left;
+            }else{
+                root = st.top();
+                st.pop();
+                if(pre != nullptr && pre->val >= root->val){
+                    return false;
+                }
+                pre = root;
+                root = root->right;
+                
+            }
+        }
+        return true;
+    }
+};
+```
+
+> 法2:递归
+
+递归方法是考虑左子树的最大值和右子树的最小值,如果当前节点处于两者之间,说明当前节点不违规.
+
+遇到空节点,我们把min和max分别设置为非常大和非常小.返回到非空节点的时候记录下来.需要记录四个值:左树最大值,左树最小值,右树最大值,右树最小值.
+
+子树向上返回的时候需要更新全局变量,这样来向父节点传递子树的最大值和最小值.
+
+```CPP
+class Solution {
+    long minnum;
+    long maxnum;
+public:
+    bool isValidBST2(TreeNode* head) {
+        if (head == nullptr) {
+            minnum = LONG_MAX;
+            maxnum = LONG_MIN;
+            return true;
+        }
+        bool lok = isValidBST2(head->left);
+        long lmin = minnum;
+        long lmax = maxnum;
+        bool rok = isValidBST2(head->right);
+        long rmin = minnum;
+        long rmax = maxnum;
+
+        minnum = std::min(std::min(lmin, rmin), (long)head->val);
+        maxnum = std::max(std::max(lmax, rmax), (long)head->val);
+
+        return lok && rok && lmax < head->val && head->val < rmin;
+    }
+};
+```
+
+---
+## 修剪二叉搜索树 
+https://leetcode.cn/problems/trim-a-binary-search-tree/description/
+
+```CPP
+class Solution {
+public:
+    TreeNode* trimBST(TreeNode* root, int low, int high) {
+        if(root == nullptr){
+            return nullptr;
+        }
+        if(root->val < low){
+            return trimBST(root->right, low, high);
+        }
+        if(root->val > high){
+            return trimBST(root->left, low, high);
+        }
+        root->left = trimBST(root->left, low, high);
+        root->right = trimBST(root->right, low, high);
+        return root;
+    }
+};
+```
+
+![](../../../images/Pasted%20image%2020260323000501.png)
+
+---
+
+## 打家劫舍 III 
+https://leetcode.cn/problems/house-robber-iii/description/
+
+```cpp
+
+class Solution {
+public:
+    int yes, no; // yes 表示选择偷当前节点的收益, no 表示不偷当前节点的收益
+
+    int rob(TreeNode* root) {
+        f(root);  
+        // 最终返回偷或不偷根节点的最大值
+        return max(yes, no);
+    }
+
+    // 辅助函数 f 计算当前子树的 yes 和 no
+    void f(TreeNode* cur) {
+        if (cur == nullptr) {
+            // 空节点，偷与不偷的收益都为 0
+            yes = 0;
+            no = 0;
+        } else {
+            // y: 偷取当前节点的收益
+            // n: 不偷当前节点的收益
+            int y = cur->val;
+            int n = 0;
+
+            // 处理左子树
+            f(cur->left);
+            // 如果偷当前节点，那么左子节点不能偷，所以只能加上左子树的不偷收益 no
+            y += no;
+            // 如果不偷当前节点，那么左子节点可以偷也可以不偷，取两者最大值
+            n += max(yes, no);
+
+            // 处理右子树
+            f(cur->right);
+            // 同理，偷当前节点 → 右子节点不能偷，只能加上 no
+            y += no;
+            // 不偷当前节点 → 右子节点可偷可不偷，取最大值
+            n += max(yes, no);
+
+            // 更新当前节点的 yes 和 no
+            yes = y;
+            no = n;
+        }
+    }
+};
+```
 
