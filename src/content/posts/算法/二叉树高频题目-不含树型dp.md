@@ -505,3 +505,130 @@ public:
 ---
 
 
+##  二叉树的最近公共祖先
+https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+
+> 使用递归实现
+
+```cpp
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root == nullptr || p == root || q == root){
+            return root;
+        }
+        //在左树上找
+        TreeNode* l = lowestCommonAncestor(root->left, p, q);
+        //在右树上找
+        TreeNode* r = lowestCommonAncestor(root->right, p, q);
+        
+        if(l == nullptr && r == nullptr){
+	        //左右都没找到,返回空
+            return nullptr;
+        }
+        if(l != nullptr && r != nullptr){
+	        //左右都找到了,root节点就是公共节点
+            return root;
+        }
+        // 只找到一边,返回找到的那一边
+        return l == nullptr ? r : l;
+    }
+};
+```
+
+---
+
+##  二叉搜索树的最近公共祖先
+https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/
+
+```cpp
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // root从上到下
+		// 如果先遇到了p，说明p是答案
+		// 如果先遇到了q，说明q是答案
+		// 如果root在p~q的值之间，不用管p和q谁大谁小，只要root在中间，那么此时的root就是答案
+		// 如果root在p~q的值的左侧，那么root往右移动
+		// 如果root在p~q的值的右侧，那么root往左移动
+        while(root->val != p->val && root->val != q->val){
+            if(root->val < max(p->val,q->val) && root->val > min(p->val,q->val)){
+                break;
+            }
+            root = root->val < min(p->val,q->val) ? root->right : root->left;
+        }
+        return root;
+    }
+};
+```
+
+---
+
+##  路径总和 II
+https://leetcode.cn/problems/path-sum-ii/)
+
+> 在递归的同时需要维护公共变量
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        vector<vector<int>> ans;
+        if(root != nullptr){
+            vector<int> path;
+            f(root, targetSum, 0, ans, path);
+        }
+        return ans;
+    }
+    void f(TreeNode* cur, int aim, int sum, vector<vector<int>>& ans, vector<int>& path){
+        if(cur->left == nullptr && cur->right == nullptr){
+            if(cur->val + sum == aim){
+                path.push_back(cur->val);
+                ans.push_back(path);
+                path.pop_back();
+            }
+        }else{
+            path.push_back(cur->val);
+            if(cur->left != nullptr){
+                f(cur->left, aim, sum + cur->val, ans, path);
+            }
+            if(cur->right != nullptr){
+                f(cur->right, aim, sum + cur->val, ans, path);
+            }   
+            path.pop_back();
+        }
+    }
+};
+```
+
+---
+##  平衡二叉树
+https://leetcode.cn/problems/balanced-binary-tree/
+
+> 在递归求高度的同时进行判断是否平衡
+
+```cpp
+class Solution {
+public:
+    bool balance;
+    bool isBalanced(TreeNode* root) {
+        balance = true;
+        f(root);
+        return balance;
+    }
+    int f(TreeNode* root){
+        if(!balance || root == nullptr){
+            return 0;
+        }
+        int lh = f(root->left);
+        int rh = f(root->right);
+        if(abs(lh-rh) > 1){
+            balance = false;
+        }
+        return max(lh,rh) + 1;
+    }
+};
+```
+
+---
+
