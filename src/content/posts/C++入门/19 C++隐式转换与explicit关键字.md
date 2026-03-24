@@ -58,7 +58,7 @@ int main()
 
 `PrintEntity("Eureka");` 这里会报错,因为C++只允许进行一次隐式转换,而字符串是char数组类型,他要先转换成`std::string`,再转换成Entity,这是不允许的.
 
-```CPP
+```cpp
 PrintEntity(std::string("Cherno"));
 PrintEntity(Entity("Cherno"));
 ```
