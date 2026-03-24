@@ -1,5 +1,5 @@
 ---
-title: "C++入门 : C++类和结构体中的静态 07"
+title: "C++入门 (七) : C++类和结构体中的静态"
 published: 2026-03-14
 description: 关于static你需要知道的事...
 image: ""

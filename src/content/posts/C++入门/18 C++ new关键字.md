@@ -1,5 +1,5 @@
 ---
-title: "C++入门 : C++ new关键字 18"
+title: "C++入门 (十八) : new关键字"
 published: 2026-03-25
 description: 关于new关键字..
 image: ""

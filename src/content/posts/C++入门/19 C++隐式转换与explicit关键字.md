@@ -1,5 +1,5 @@
 ---
-title: "C++入门 : C++隐式转换与explicit关键字 19"
+title: "C++入门 (十九) : 隐式转换与explicit关键字"
 published: 2026-03-26
 description: 关于隐式转换与explicit关键字...
 image: ""

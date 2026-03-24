@@ -1,5 +1,5 @@
 ---
-title: "C++入门 : C++的mutable关键字 15"
+title: "C++入门 (十五) : mutable关键字"
 published: 2026-03-22
 description: 关于mutable关键字...
 image: ""
