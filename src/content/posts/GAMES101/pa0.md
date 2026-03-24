@@ -17,10 +17,6 @@ draft: false
 #include<Eigen/Dense>
 #include<iostream>
 
-#include <cmath>
-#include <Eigen/Core>
-#include <Eigen/Dense>
-#include <iostream>
 
 int main() {
 
