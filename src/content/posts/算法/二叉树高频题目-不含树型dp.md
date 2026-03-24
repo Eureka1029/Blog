@@ -637,7 +637,7 @@ https://leetcode.cn/problems/validate-binary-search-tree/description/
 
 > 法1:利用非递归中序遍历(使用栈实现),搜索树中序遍历之后应该是升序
 
-```CPP
+```cpp
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
@@ -674,7 +674,7 @@ public:
 
 子树向上返回的时候需要更新全局变量,这样来向父节点传递子树的最大值和最小值.
 
-```CPP
+```cpp
 class Solution {
     long minnum;
     long maxnum;
@@ -704,7 +704,7 @@ public:
 ## 修剪二叉搜索树 
 https://leetcode.cn/problems/trim-a-binary-search-tree/description/
 
-```CPP
+```cpp
 class Solution {
 public:
     TreeNode* trimBST(TreeNode* root, int low, int high) {

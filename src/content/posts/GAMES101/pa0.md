@@ -9,9 +9,9 @@ tags:
 category: GAMES101
 draft: false
 ---
-给定一个点P=(2,1),将该点绕原点先逆时针旋转45◦，再平移(1,2),计算出 变换后点的坐标（要求用齐次坐标进行计算）
+> 给定一个点P=(2,1),将该点绕原点先逆时针旋转45◦，再平移(1,2),计算出 变换后点的坐标（要求用齐次坐标进行计算）
 
-```CPP
+```cpp
 #include<cmath>
 #include<Eigen/Core>
 #include<Eigen/Dense>
