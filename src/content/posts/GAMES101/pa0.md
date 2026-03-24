@@ -17,16 +17,28 @@ draft: false
 #include<Eigen/Dense>
 #include<iostream>
 
+#include <cmath>
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <iostream>
+
 int main() {
-	float pi = std::acos(-1);
-	float angle = 45.0f / 180.0f * pi;
-	Eigen::Vector3f p(2.0f, 1.0f, 1.0f);
-	Eigen::Matrix3f r;
-	r << std::cos(angle), -std::sin(angle), 1,
-		std::sin(angle), std::cos(angle), 2,
-		0, 0, 1;
-	Eigen::Vector3f result = r * p;
-	std::cout << "The result is: \n" << result << std::endl;
-	return 0;
+
+    Eigen::Vector3f p(2.0f, 1.0f, 1.0f);
+    Eigen::Matrix3f r;
+
+    // 提前计算好浮点数角度
+    float pi = std::acos(-1);
+    float angle = 45.0f / 180.0f * pi;
+
+    r << std::cos(angle), -std::sin(angle), 1.0f,
+        std::sin(angle), std::cos(angle), 2.0f,
+        0.0f, 0.0f, 1.0f;
+
+    Eigen::Vector3f result = r * p;
+
+    std::cout << "变换后的结果是:\n" << result << std::endl;
+
+    return 0;
 }
 ```
