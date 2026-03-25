@@ -1,5 +1,5 @@
 ---
-title: Lecture 04 Transformation Cont.
+title: GAMES101 Lecture 04 Transformation Cont.
 published: 2026-03-21
 description: GAMES101 Lecture 4
 image: ""

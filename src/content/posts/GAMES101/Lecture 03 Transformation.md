@@ -1,5 +1,5 @@
 ---
-title: Lecture 03 Transformation
+title: GAMES101 Lecture 03 Transformation
 published: 2026-03-19
 description: GAMES101 Lecture 3
 image: ""
