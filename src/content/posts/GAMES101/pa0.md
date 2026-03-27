@@ -1,7 +1,7 @@
 ---
 title: Games101 pa0
 published: 2026-03-24
-description: 作业0
+description: GAMES101 作业0
 image: ""
 tags:
   - GAMES101
