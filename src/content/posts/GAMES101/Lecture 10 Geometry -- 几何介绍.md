@@ -1,5 +1,5 @@
 ---
-title: Lecture10 Geometry -- 几何介绍
+title: Lecture 10 Geometry -- 几何介绍
 published: 2026-04-02
 description: GAMES101 Lecture 10
 image: ""
