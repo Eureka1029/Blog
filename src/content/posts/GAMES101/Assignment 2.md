@@ -29,8 +29,6 @@ static bool insideTriangle(int x, int y, const Vector3f* _v)
         {
             return false;
         }
-
-   
     }
     return true;
    
