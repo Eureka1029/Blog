@@ -24,7 +24,6 @@ void line(int ax, int ay, int bx, int by, TGAImage& framebuffer, TGAColor color)
     int y = ay;
     int ierror = 0;
     for(int x = ax; x <= bx; x++){ //尝试画线
-        float t = (x - ax) / static_cast<float>(bx - ax); 
         if(steep){
             framebuffer.set(y, x, color);//因为交换了x和y,所以需要交换回来.
         }else{
