@@ -1,7 +1,7 @@
 ---
-title: Triangle rasterization
+title: 02 Triangle rasterization 三角形光栅化
 published: 2026-04-12
-description: Triangle rasterization
+description: Lesson 2
 image: ""
 tags:
   - 图形学

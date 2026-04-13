@@ -1,5 +1,5 @@
 ---
-title: Bresenham's line drawing
+title: 01 Bresenham's line drawing 线条绘制
 published: 2026-04-10
 description: Lesson 1
 image: ""
