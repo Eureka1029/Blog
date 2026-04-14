@@ -1,7 +1,7 @@
 ---
 title: 05 Naive camera handling
 published: 2026-04-15
-description:
+description: Lesson 5
 image: ""
 tags:
   - tinyrenderer
