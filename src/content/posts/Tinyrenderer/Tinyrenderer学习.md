@@ -314,18 +314,23 @@ virtual std::pair<bool,TGAColor> fragment(const vec3 bar) const {
 如何得到TBN矩阵
 
 定义边向量：
+
 $$\begin{array}{ll}
 \vec{e_0} & := P_1 - P_0 \\ %\begin{pmatrix}P_{1x} - P_{0x} \\P_{1y} - P_{0y} \\P_{1z} - P_{0z} \\ \end{pmatrix}
 \vec{e_1} & := P_2 - P_0 \\
 \vec{u_0} & := U_1 - U_0 \\
 \vec{u_1} & := U_2 - U_0
 \end{array}$$
+
 那么，UV 映射可以用以下代码描述：$2 \times 3$ 矩阵 $M$: 
+
 $$M \times \underbrace{\begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}}_{3\times 2~\text{matrix}} = \underbrace{\begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}}_{2\times 2~\text{matrix}}$$
+
 以下是一个示例：
 ![](../../../images/截屏2026-04-17%2018.30.19.png)
 
 我们将  $3\times 2$ 矩阵 $E$ 以及 $2\times 2$ 矩阵 $U$ :
+
 $$\begin{array}{ll}
 E &:= \begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}\\
 U &:= \begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}
@@ -335,13 +340,16 @@ U &:= \begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}
 
 $$\begin{aligned} M\vec{t} &= \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\ M\vec{b} &= \begin{pmatrix} 0 \\ 1 \end{pmatrix} \end{aligned}$$
 
+
 或者，等效地， $M \times \begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$. 请注意， $M \times E = U$, 因此，
 
 $$M \times E \times U^{-1} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}.$$
 
+
 由此，我们得出结论：
 
 $$\begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = E \times U^{-1}.$$
+
 
 最后，添加插值法线 $\vec{n}$, 并且你已经构造了完整的切空间基 $\begin{pmatrix} \vec{t} & \vec{b} & \vec{n} \end{pmatrix}$.
 
@@ -427,6 +435,7 @@ static TGAColor sample2D(const TGAImage &img, const vec2 &uvf) {
    $$x_0 = \lfloor x \rfloor, \quad x_1 = \min(x_0 + 1, W - 1)$$
    
    $$y_0 = \lfloor y \rfloor, \quad y_1 = \min(y_0 + 1, H - 1)$$
+
    
    四个点是：
 
