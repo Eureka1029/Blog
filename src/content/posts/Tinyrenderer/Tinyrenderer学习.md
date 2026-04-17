@@ -422,7 +422,7 @@ return {false, gl_FragColor};
 
 `TGAColor gl_FragColor = sample2D(model.diffuse(), uv);` 根据漫反射贴图获得基础颜色。 
 
-**sample2D的双线性插值实现 **
+**sample2D的双线性插值实现**
 
 ```cpp 
 static TGAColor sample2D(const TGAImage &img, const vec2 &uvf) { 
@@ -462,11 +462,12 @@ virtual std::pair<bool,TGAColor> fragment(const vec3 bar) const = 0;
 }; 
 ``` 
 
-**1. 把 UV 映射到纹理连续坐标** 设纹理宽高是 $W, H$，UV 是 $u, v \in [0, 1]$，先算： 
+**1. 把 UV 映射到纹理连续坐标** 
+$设纹理宽高是 W, H，UV 是 u, v \in [0, 1]$，先算： 
 
 $$x = u \cdot (W - 1), \quad y = v \cdot (H - 1)$$ 
 
-这里 $x, y$ 一般是小数。 
+$这里 x, y 一般是小数$。 
 
 **2. 找到包围它的四个像素** 
 $$
@@ -485,7 +486,7 @@ $$
 
 **3. 算局部小数权重** $$s = x - x_0, \quad t = y - y_0$$ 
 
-$s, t$ 都在 $[0, 1]$，表示在这个小网格里离左边和下边有多远。 
+$s, t 都在 [0, 1]$，表示在这个小网格里离左边和下边有多远。 
 
 **4. 先沿 x 插值两次** $$C_0 = (1 - s)C_{00} + sC_{10}$$ 
 $$C_1 = (1 - s)C_{01} + sC_{11}$$ 
