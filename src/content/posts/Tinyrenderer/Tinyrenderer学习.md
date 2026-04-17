@@ -331,7 +331,8 @@ $$\begin{array}{ll}
 $$M \times \underbrace{\begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}}_{3\times 2~\text{matrix}} = \underbrace{\begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}}_{2\times 2~\text{matrix}}$$
 
 以下是一个示例：
-![](../../../images/截屏2026-04-17%2018.30.19.png)
+
+![](./uv-mapping-example.png)
 
 我们将  $3\times 2$ 矩阵 $E$ 以及 $2\times 2$ 矩阵 $U$ :
 
