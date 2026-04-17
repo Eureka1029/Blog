@@ -347,14 +347,15 @@ $$
 
 我们将 $3\times 2$ 矩阵 $E$ 以及 $2\times 2$ 矩阵 $U$ : 
 
-$$\begin{array}{ll} 
+$$
+\begin{array}{ll} 
 E &:= \begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}\\ 
 U &:= \begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix} 
-\end{array}$$ 
+\end{array}
+$$ 
 
-因此，我们有 $M \times E = U$. 
-
-我们要求解切线向量 $\vec{t}$ 以及切向量 $\vec{b}$ 使得它们映射到单位 UV 轴上： 
+因此，我们有 $M \times E = U$.   
+$我们要求解切线向量 \vec{t} 以及切向量 \vec{b} 使得它们映射到单位 UV 轴上$： 
 
 $$
 \begin{aligned} 
@@ -363,7 +364,8 @@ M\vec{b} &= \begin{pmatrix} 0 \\ 1 \end{pmatrix}
 \end{aligned}
 $$ 
 
-或者，等效地， $M \times \begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$. 
+或者，等效地，
+$M \times \begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$. 
 
 请注意， $M \times E = U$, 因此， 
 
@@ -377,7 +379,7 @@ $$
 \begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = E \times U^{-1}.
 $$ 
 
-最后，添加插值法线 $\vec{n}$, 并且你已经构造了完整的切空间基 $\begin{pmatrix} \vec{t} & \vec{b} & \vec{n} \end{pmatrix}$. 
+$最后，添加插值法线 \vec{n}, 并且你已经构造了完整的切空间基 \begin{pmatrix} \vec{t} & \vec{b} & \vec{n} \end{pmatrix}$. 
 
 **phongShader应用**
 
@@ -467,9 +469,13 @@ $$x = u \cdot (W - 1), \quad y = v \cdot (H - 1)$$
 这里 $x, y$ 一般是小数。 
 
 **2. 找到包围它的四个像素** 
-$$x_0 = \lfloor x \rfloor, \quad x_1 = \min(x_0 + 1, W - 1)$$
+$$
+x_0 = \lfloor x \rfloor, \quad x_1 = \min(x_0 + 1, W - 1)
+$$
 
-$$y_0 = \lfloor y \rfloor, \quad y_1 = \min(y_0 + 1, H - 1)$$ 
+$$
+y_0 = \lfloor y \rfloor, \quad y_1 = \min(y_0 + 1, H - 1)
+$$ 
 
 四个点是： 
 * 左下（或左上，取决于纹理原点约定） $C_{00} = I(x_0, y_0)$ 
