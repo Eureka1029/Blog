@@ -218,11 +218,15 @@ auto [bbminy,bbmaxy] = std::minmax({screen[0].y, screen[1].y, screen[2].y});
 vec3 bc_screen = ABC.invert_transpose() * vec3{static_cast<double>(x), static_cast<double>(y), 1.};
 ```
 原理:
+
 $$\begin{bmatrix} x_0 & x_1 & x_2 \\ y_0 & y_1 & y_2 \\ 1 & 1 & 1 \end{bmatrix} \begin{bmatrix} u \\ v \\ w \end{bmatrix} = \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}$$ 
-$$ABC = \begin{bmatrix} x_0 & y_0 & 1 \\ x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \end{bmatrix}$$ 
-$$ABC^T \cdot \vec{bc} = P$$ 
+$$ABC = \begin{bmatrix} x_0 & y_0 & 1 \\ x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \end{bmatrix}$$
+
+$$ABC^T \cdot \vec{bc} = P$$
+
 
 $$\vec{bc} = (ABC^T)^{-1} \cdot P$$
+
 
 
 **透视校正插值**
