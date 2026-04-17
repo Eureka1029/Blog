@@ -219,17 +219,25 @@ vec3 bc_screen = ABC.invert_transpose() * vec3{static_cast<double>(x), static_ca
 ```
 原理:
 
-$$\begin{bmatrix} x_0 & x_1 & x_2 \\ y_0 & y_1 & y_2 \\ 1 & 1 & 1 \end{bmatrix} \begin{bmatrix} u \\ v \\ w \end{bmatrix} = \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}$$
+$$
+\begin{bmatrix} x_0 & x_1 & x_2 \\ y_0 & y_1 & y_2 \\ 1 & 1 & 1 \end{bmatrix} \begin{bmatrix} u \\ v \\ w \end{bmatrix} = \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
+$$
 
 
-$$ABC = \begin{bmatrix} x_0 & y_0 & 1 \\ x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \end{bmatrix}$$
+$$
+ABC = \begin{bmatrix} x_0 & y_0 & 1 \\ x_1 & y_1 & 1 \\ x_2 & y_2 & 1 \end{bmatrix}
+$$
 
 
-$$ABC^T \cdot \vec{bc} = P$$
+$$
+ABC^T \cdot \vec{bc} = P
+$$
 
 
 
-$$\vec{bc} = (ABC^T)^{-1} \cdot P$$
+$$
+\vec{bc} = (ABC^T)^{-1} \cdot P
+$$
 
 
 
@@ -320,18 +328,20 @@ virtual std::pair<bool,TGAColor> fragment(const vec3 bar) const {
 ```
 
 如何得到TBN矩阵
-
-
-$$\begin{array}{ll} 
-\vec{e_0} & := P_1 - P_0 \\ 
+$$
+\begin{array}{ll} 
+\vec{e_0} & := P_1 - P_0 \\
 \vec{e_1} & := P_2 - P_0 \\ 
 \vec{u_0} & := U_1 - U_0 \\ 
 \vec{u_1} & := U_2 - U_0 
-\end{array}$$ 
+\end{array}
+$$ 
 
 那么，UV 映射可以用以下代码描述：$2 \times 3$ 矩阵 $M$: 
 
-$$M \times \underbrace{\begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}}_{3\times 2~\text{matrix}} = \underbrace{\begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}}_{2\times 2~\text{matrix}}$$ 
+$$
+M \times \underbrace{\begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}}_{3\times 2~\text{matrix}} = \underbrace{\begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}}_{2\times 2~\text{matrix}}
+$$ 
 以下是一个示例：
 ![](../../../images/截屏2026-04-17%2019.30.01.png)
 
@@ -346,24 +356,30 @@ U &:= \begin{pmatrix} \vec{u_0} & \vec{u_1} \end{pmatrix}
 
 我们要求解切线向量 $\vec{t}$ 以及切向量 $\vec{b}$ 使得它们映射到单位 UV 轴上： 
 
-$$\begin{aligned} 
+$$
+\begin{aligned} 
 M\vec{t} &= \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\ 
 M\vec{b} &= \begin{pmatrix} 0 \\ 1 \end{pmatrix} 
-\end{aligned}$$ 
+\end{aligned}
+$$ 
 
 或者，等效地， $M \times \begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$. 
 
 请注意， $M \times E = U$, 因此， 
 
-$$M \times E \times U^{-1} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}.$$ 
+$$
+M \times E \times U^{-1} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}.
+$$ 
 
 由此，我们得出结论： 
 
-$$\begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = E \times U^{-1}.$$ 
+$$
+\begin{pmatrix} \vec{t} & \vec{b} \end{pmatrix} = E \times U^{-1}.
+$$ 
 
 最后，添加插值法线 $\vec{n}$, 并且你已经构造了完整的切空间基 $\begin{pmatrix} \vec{t} & \vec{b} & \vec{n} \end{pmatrix}$. 
 
-### phongShader应用 
+**phongShader应用**
 
 ```cpp 
 vec2 uv = varying_uv[0] * bar[0] + varying_uv[1] * bar[1] + varying_uv[2] * bar[2]; 
@@ -404,7 +420,7 @@ return {false, gl_FragColor};
 
 `TGAColor gl_FragColor = sample2D(model.diffuse(), uv);` 根据漫反射贴图获得基础颜色。 
 
-### sample2D的双线性插值实现 
+**sample2D的双线性插值实现 **
 
 ```cpp 
 static TGAColor sample2D(const TGAImage &img, const vec2 &uvf) { 
@@ -450,7 +466,9 @@ $$x = u \cdot (W - 1), \quad y = v \cdot (H - 1)$$
 
 这里 $x, y$ 一般是小数。 
 
-**2. 找到包围它的四个像素** $$x_0 = \lfloor x \rfloor, \quad x_1 = \min(x_0 + 1, W - 1)$$ 
+**2. 找到包围它的四个像素** 
+$$x_0 = \lfloor x \rfloor, \quad x_1 = \min(x_0 + 1, W - 1)$$
+
 $$y_0 = \lfloor y \rfloor, \quad y_1 = \min(y_0 + 1, H - 1)$$ 
 
 四个点是： 
