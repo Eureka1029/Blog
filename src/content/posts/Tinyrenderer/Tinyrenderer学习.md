@@ -336,7 +336,6 @@ $$M \times \underbrace{\begin{pmatrix} \vec{e_0} & \vec{e_1} \end{pmatrix}}_{3\t
 
 以下是一个示例：
 
-![](./uv-mapping-example.png)
 
 我们将  $3\times 2$ 矩阵 $E$ 以及 $2\times 2$ 矩阵 $U$ :
 
