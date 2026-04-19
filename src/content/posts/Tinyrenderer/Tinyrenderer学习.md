@@ -1,5 +1,5 @@
 ---
-title: Tinyrenderer(软光栅器)总结
+title: Tinyrenderer(软件光栅器)总结
 published: 2026-04-17
 description: 对tinyrenderer的浅显理解
 image: ./diablo3.png
