@@ -8,6 +8,7 @@ import { getDir } from "../utils/url-utils";
 import ImageWrapper from "./misc/ImageWrapper.astro";
 import PostMetadata from "./PostMeta.astro";
 
+
 interface Props {
 	class?: string;
 	entry: CollectionEntry<"posts">;
@@ -41,6 +42,8 @@ const hasCover = image !== undefined && image !== null && image !== "";
 const coverWidth = "28%";
 
 const { remarkPluginFrontmatter } = await entry.render();
+
+const isPinned = entry.data.pinned === true;
 ---
 <div class:list={["card-base flex flex-col-reverse md:flex-col w-full rounded-[var(--radius-large)] overflow-hidden relative", className]} style={style}>
     <div class:list={["pl-6 md:pl-9 pr-6 md:pr-2 pt-6 md:pt-7 pb-6 relative", {"w-full md:w-[calc(100%_-_52px_-_12px)]": !hasCover, "w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]": hasCover}]}>
@@ -103,6 +106,11 @@ const { remarkPluginFrontmatter } = await entry.render();
             </Icon>
         </a>
     }
+    {isPinned && (
+        <span class="inline-flex items-center mr-2 px-2 py-0.5 text-sm font-medium bg-[oklch(97%_0.1_var(--hue))] dark:bg-[oklch(30%_0.1_var(--hue))] text-[oklch(55%_0.1_var(--hue))] dark:text-[oklch(80%_0.1_var(--hue))] rounded">
+            <Icon name="material-symbols:push-pin" class="mr-1 text-base" /> 置顶
+        </span>
+    )}
 </div>
 <div class="transition border-t-[1px] border-dashed mx-6 border-black/10 dark:border-white/[0.15] last:border-t-0 md:hidden"></div>
 
