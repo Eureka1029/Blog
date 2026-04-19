@@ -5,16 +5,27 @@ import { getCategoryUrl } from "@utils/url-utils.ts";
 
 // // Retrieve posts and sort them by publication date
 async function getRawSortedPosts() {
-	const allBlogPosts = await getCollection("posts", ({ data }) => {
-		return import.meta.env.PROD ? data.draft !== true : true;
-	});
+  const allBlogPosts = await getCollection("posts", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
 
-	const sorted = allBlogPosts.sort((a, b) => {
-		const dateA = new Date(a.data.published);
-		const dateB = new Date(b.data.published);
-		return dateA > dateB ? -1 : 1;
-	});
-	return sorted;
+  const sorted = allBlogPosts.sort((a, b) => {
+    // 1. 获取置顶状态 (如果没有设置，默认为 false)
+    const pinA = a.data.pinned ?? false;
+    const pinB = b.data.pinned ?? false;
+
+    // 2. 如果置顶状态不同，置顶的排在前面
+    if (pinA !== pinB) {
+      return pinA ? -1 : 1;
+    }
+
+    // 3. 如果置顶状态相同（都置顶或都不置顶），则按时间倒序
+    const dateA = new Date(a.data.published);
+    const dateB = new Date(b.data.published);
+    return dateA > dateB ? -1 : 1;
+  });
+
+  return sorted;
 }
 
 export async function getSortedPosts() {
