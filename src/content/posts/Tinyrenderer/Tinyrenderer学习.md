@@ -509,3 +509,166 @@ return {false, gl_FragColor};
 ``` 
 
 ### 后处理(阴影处理)
+
+
+**创建阴影屏障**
+```cpp
+    std::vector<bool> mask(width*height, false); // 存储每个像素的受光情况
+    std::vector<double> zbuffer_copy = zbuffer; //保存第一遍渲染获得的相机系深度测试
+    mat<4,4> M = (Viewport * Perspective * ModelView).invert(); //创建从相机系回到三维空间系坐标的矩阵
+```
+
+**阴影渲染**
+```cpp
+{ // 阴影渲染通道
+        lookat(light, center, up);
+        init_perspective(norm(eye-center));
+        init_viewport(shadoww/16, shadowh/16, shadoww*7/8, shadowh*7/8);
+        init_zbuffer(shadoww, shadowh);
+        TGAImage trash(shadoww, shadowh, TGAImage::RGB, {177, 195, 209, 255});
+
+        // 对所有输入对象进行迭代
+        for (int m=1; m<argc; m++) {
+            // 加载模型数据
+            Model model(argv[m]);
+            BlankShader shader{model};
+            // 对所有面进行迭代
+            for (int f=0; f<model.nfaces(); f++) {
+                // 组装图元
+                Triangle clip = { shader.vertex(f, 0),
+                                  shader.vertex(f, 1),
+                                  shader.vertex(f, 2) };
+                // 光栅化图元
+                rasterize(clip, shader, trash);
+            }
+        }
+        trash.write_tga_file("shadowmap.tga");
+    }
+```
+
+> 其实就是把第一次的相机坐标换成了光源坐标,把着色器换成了BlankShader,其他逻辑没变,初始化了MVP矩阵,还有zbuffer数组.
+
+直观画出光源为相机的视角图
+![](../../../images/截屏2026-04-19%2014.26.07.png)
+
+**BlankShader.vertex()**
+只需要将顶点坐标转换到光源系即可.
+```cpp
+virtual vec4 vertex(const int face, const int vert) {
+	vec4 gl_Position = ModelView * model.vert(face, vert);
+	return Perspective * gl_Position;
+}
+```
+
+
+**直观画出光源系zbuffer图**
+```cpp
+drop_zbuffer("zbuffer2.tga", zbuffer, shadoww, shadowh);
+
+void drop_zbuffer(std::string filename, std::vector<double> &zbuffer, int width, int height) {
+    TGAImage zimg(width, height, TGAImage::GRAYSCALE, {0,0,0,0}); //初始化图片
+    // 找到最小和最大深度值用于归一化
+    double minz = +1000;
+    double maxz = -1000;
+    for (int x=0; x<width; x++) {
+        for (int y=0; y<height; y++) {
+            double z = zbuffer[x+y*width];
+            if (z<-100) continue;  // 跳过背景像素
+            minz = std::min(z, minz);
+            maxz = std::max(z, maxz);
+        }
+    }
+    // 将深度值映射到灰度值
+    for (int x=0; x<width; x++) {
+        for (int y=0; y<height; y++) {
+            double z = zbuffer[x+y*width];
+            if (z<-100) continue;
+            z = (z - minz)/(maxz-minz) * 255;
+            zimg.set(x, y, {(unsigned char)z, 255, 255, 255});
+        }
+    }
+    zimg.write_tga_file(filename);
+}
+```
+
+这里的主要有两个循环,第一个循环遍历所有像素求出最大最小深度,用来为第二次处理归一化做准备(映射回0-255值内)
+
+第二次循环遍历所有像素,在图片中画出其深度信息.
+![](../../../images/截屏2026-04-19%2014.25.35.png)
+
+**计算阴影屏障**
+也就是看这个点是否被光源照亮
+```cpp
+// 后处理：计算阴影遮罩
+for (int x=0; x<width; x++) {
+	for (int y=0; y<height; y++) {
+		// 从屏幕坐标转换回世界坐标
+		vec4 fragment = M * vec4{(double)x, (double)y, zbuffer_copy[x+y*width], 1.};
+		// 投影到阴影贴图空间
+		vec4 q = N * fragment;
+		vec3 p = q.xyz()/q.w;
+		// 检查像素是否被光线照亮
+		bool lit =  (fragment.z < -100 ||                                   // 是背景或
+					(p.x<0 || p.x>=shadoww || p.y<0 || p.y>=shadowh) ||   // 超出阴影缓冲区范围
+					(p.z > zbuffer[int(p.x) + int(p.y)*shadoww] - .03));  // 在阴影贴图中可见
+		mask[x+y*width] = lit;
+	} 
+}
+```
+
+M矩阵 : 从屏幕坐标转换到初始坐标系的矩阵
+N矩阵: 从初始坐标系到光源系的矩阵.
+这里的作用是用来把第一次渲染的像素坐标和深度信息转换到光源系中用作对比.
+```cpp
+	vec4 fragment = M * vec4{(double)x, (double)y, zbuffer_copy[x+y*width], 1.};
+	// 投影到阴影贴图空间
+	vec4 q = N * fragment;
+	vec3 p = q.xyz()/q.w; //归一化
+```
+
+mask数组存储了哪些像素能被光源照亮
+1. 背景深度没变过(认为 小于 - 100 为没变)
+2. 超出阴影缓冲的范围认为为亮
+3. 深度等于光源zbuffer的深度认为亮(由于计算机同一值记录有误差,认为误差在0.03就等于相等深度)
+```cpp
+bool lit =  (fragment.z<-100 ||                      // 是背景或
+				(p.x<0 || p.x>=shadoww || p.y<0 || p.y>=shadowh) ||   // 超出阴影缓冲区范围
+				(p.z > zbuffer[int(p.x) + int(p.y)*shadoww] - .03));  // 在阴影贴图中可见
+	mask[x+y*width] = lit;
+```
+
+**直观画出遮罩图**
+```cpp
+TGAImage maskimg(width, height, TGAImage::GRAYSCALE);
+for (int x=0; x<width; x++) {
+	for (int y=0; y<height; y++) {
+		if (mask[x+y*width]) continue;
+		maskimg.set(x, y, {255, 255, 255, 255});
+	}
+}
+maskimg.write_tga_file("mask.tga");
+```
+遍历所有像素,看看如果被照亮就不画,没被照亮画为白色
+![](../../../images/截屏2026-04-19%2014.28.50.png)
+
+**阴影应用**
+```cpp
+for (int x=0; x<width; x++) {
+	for (int y=0; y<height; y++) {
+		if (mask[x+y*width]) continue;
+		TGAColor c = framebuffer.get(x, y);
+		vec3 a = {(double)c[0], (double)c[1], (double)c[2]};
+		if (norm(a)<80) continue;
+		a = normalized(a)*80;
+		framebuffer.set(x, y, { (unsigned char)a[0], (unsigned char)a[1], (unsigned char)a[2], 255 });
+	}
+}
+framebuffer.write_tga_file("shadow.tga");
+```
+
+主要思路就是遍历所有像素,获得当前像素的颜色值c.转为颜色向量a,如果已经很黑了就不处理了(模<80);色相不变,亮度长度强行压到80的颜色.新的颜色写到第一次的缓冲区中.重新生成图
+
+经过以上过程,我们就获得了一个效果还行的图;
+![](../../../images/截屏2026-04-19%2014.40.52.png)
+
+
