@@ -8,6 +8,7 @@ tags:
   - 图形学
 category: 软件光栅器
 draft: false
+pinned: true
 ---
 本项目目标就是学习光栅化的渲染管线,巩固知识.
 

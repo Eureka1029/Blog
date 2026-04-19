@@ -8,7 +8,7 @@ tags:
   - GAMES101
 category: GAMES101
 draft: false
-pinned: true
+pinned: false
 ---
 ## Irradiance(物体表面接收的光的能量)
 Power per area 每一个面积上的能力  面必须和光线垂直(不垂直就要进行投影)
