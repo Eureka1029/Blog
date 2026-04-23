@@ -313,3 +313,107 @@ color ray_color(const ray& r) {
 }
 ```
 
+> 基本思路就是解方程,看有没有根,有根就直接画成红色.
+
+结果:
+![](../../../images/截屏2026-04-23%2020.09.02.png)
+
+请注意,这里我们的代码没有考虑t的正负,只考虑了是否有交点,因此把球心坐标改成z=+1结果还是一样的(无法区分摄像机前后的物体),后续会解决这个问题.
+
+# 曲面向量与多个对象
+
+## 利用曲面法线进行着色
+
+基本思路:
+1. 找出交点
+2. 求出法向量并归一化(单位向量)
+3. 将其(x,y,z)作为(r,b,g)的项设置颜色
+
+让我们来看看代码:
+```cpp
+double hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = center - r.origin();
+    auto a = dot(r.direction(), r.direction());
+    auto b = -2.0 * dot(r.direction(), oc);
+    auto c = dot(oc, oc) - radius*radius;
+    auto discriminant = b*b - 4*a*c;
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return (-b - std::sqrt(discriminant) ) / (2.0*a);
+    }
+}
+
+color ray_color(const ray& r) {
+    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+    if (t > 0.0) {
+        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1)); //曲面法向量
+        return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+    }
+
+    vec3 unit_direction = unit_vector(r.direction());
+    auto a = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+}
+```
+
+x,y,z 的取值范围在 `[-1,1]`之间,我们需要将它移到`[0,1]`之间,再设置颜色.
+看看结果:
+![](../../../images/截屏2026-04-23%2020.36.35.png)
+
+
+## 简化光线与球体相交的代码
+
+将 $b = -2h$带入。  
+
+$$
+\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+$$
+= \frac{-(-2h) \pm \sqrt{(-2h)^2 - 4ac}}{2a}
+$$
+
+$$
+= \frac{2h \pm 2\sqrt{h^2 - ac}}{2a}
+$$
+
+$$
+= \frac{h \pm \sqrt{h^2 - ac}}{a}
+$$
+
+这样简化得很漂亮，我们就用它吧。那么，求解 $h$：
+
+$$
+b = -2d \cdot (C - Q)
+$$
+
+$$
+b = -2h
+$$
+
+$$
+h = \frac{b}{-2} = d \cdot (C - Q)
+$$
+
+基于这些观察结果，我们现在可以将球体相交代码简化为如下形式：
+```cpp
+//main.cpp
+double hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = center - r.origin();
+    auto a = r.direction().length_squared();
+    auto h = dot(r.direction(), oc);
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = h*h - a*c;
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return (h - std::sqrt(discriminant)) / a;
+    }
+}
+```
+
+## 可点击对象的抽象概念
+
