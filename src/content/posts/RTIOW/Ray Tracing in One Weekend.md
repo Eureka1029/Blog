@@ -1,12 +1,12 @@
 ---
-title: Ray Tracing in One Weekend
+title: Ray Tracing in One Weekend总结
 published: 2026-04-23
 description: 对RTIOW的浅显理解
 image: ./RTIOW.png
 tags:
   - 图形学
   - RTIOW
-category: RTIOW
+category: 光线追踪
 draft: false
 pinned: true
 ---
@@ -22,7 +22,7 @@ g++ main.cpp -o raytracer
 
 
 ### 添加了进度指示器
-```cpp {2,6}
+```cpp {2,5}
 for (int j = 0; j < image_height; ++j) {
 	std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 	//....逐个像素设置颜色
@@ -292,4 +292,24 @@ $$
 ## 创建我们的第一张光线追踪图像
 
 
+设置一个半径为0.5,原点在(0,0,-1)的小球
+```cpp {1-8,11-12}
+bool hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = center - r.origin();
+    auto a = dot(r.direction(), r.direction());
+    auto b = -2.0 * dot(r.direction(), oc);
+    auto c = dot(oc, oc) - radius*radius;
+    auto discriminant = b*b - 4*a*c;
+    return (discriminant >= 0);
+}
+
+color ray_color(const ray& r) {
+    if (hit_sphere(point3(0,0,-1), 0.5, r))
+        return color(1, 0, 0);
+
+    vec3 unit_direction = unit_vector(r.direction());
+    auto a = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+}
+```
 
