@@ -11,7 +11,7 @@ draft: false
 pinned: true
 ---
 我自己实现的项目源码在这里:https://github.com/Eureka1029/RayTracing
-## 输出图像
+# 输出图像
 
 如何运行文件  
 在当前文件夹的终端中运行
@@ -22,7 +22,7 @@ g++ main.cpp -o raytracer
 
 
 ### 添加了进度指示器
-```cpp
+```cpp {2,6}
 for (int j = 0; j < image_height; ++j) {
 	std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 	//....逐个像素设置颜色
@@ -30,7 +30,7 @@ for (int j = 0; j < image_height; ++j) {
 std::clog << "\rDone.                 \n";
 ```
 
-## vec3类
+# vec3类
 
 这里将point3设置为vec3的别名
 
