@@ -417,3 +417,97 @@ double hit_sphere(const point3& center, double radius, const ray& r) {
 
 ## 可点击对象的抽象概念
 
+创建`hittable.h`头文件
+
+`hit_record`类用来记录光线和面的相交时的点,法线与t.
+`hittable`类有一个虚函数`hit()`判断光线是否能够相交
+
+
+所有物体都继承`hittable`类,以下是球体的类定义
+```cpp
+#ifndef SPHERE_H
+#define SPHERE_H
+
+#include "hittable.h"
+#include "vec3.h"
+
+class sphere : public hittable {
+  public:
+    sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {}
+
+    bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override {
+        vec3 oc = center - r.origin();
+        auto a = r.direction().length_squared();
+        auto h = dot(r.direction(), oc);
+        auto c = oc.length_squared() - radius*radius;
+
+        auto discriminant = h*h - a*c;
+        if (discriminant < 0)
+            return false;
+
+        auto sqrtd = std::sqrt(discriminant);
+
+        //求根公式的两个t,找出离摄像头最近的t
+        auto root = (h - sqrtd) / a; //先看-号根,越小越近
+        if (root <= ray_tmin || ray_tmax <= root) {  //不在区间内
+            root = (h + sqrtd) / a; //再看+号根
+            if (root <= ray_tmin || ray_tmax <= root)
+                return false;
+        }
+		
+		// 记录
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        rec.normal = (rec.p - center) / radius;
+
+        return true;
+    }
+
+  private:
+    point3 center;
+    double radius;
+};
+
+#endif
+```
+
+
+## 正面与背面
+
+这里我们需要设置法线方向始终与光线射入方向相反.
+(先计算出朝外的法线,再根据光线和法线的点乘结果判断方向是否相反,不相反就让法线变换符号)
+
+`[hittable.h] 在 hit_record 中添加正面追踪功能`
+```cpp {6-11}
+class hit_record {
+  public:
+    point3 p;
+    vec3 normal;
+    double t;
+    bool front_face;
+
+    void set_face_normal(const ray& r, const vec3& outward_normal) {
+        front_face = dot(r.direction(), outward_normal) < 0;
+        normal = front_face ? outward_normal : -outward_normal;
+    }
+};
+```
+
+在球体类的记录代码中添加以下代码来记录法线.
+```cpp {10-11}
+class sphere : public hittable {
+  public:
+    ...
+    bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const {
+        ...
+
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        vec3 outward_normal = (rec.p - center) / radius;
+        rec.set_face_normal(r, outward_normal);
+
+        return true;
+    }
+    ...
+};
+```
