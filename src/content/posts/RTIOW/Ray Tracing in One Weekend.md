@@ -511,3 +511,53 @@ class sphere : public hittable {
     ...
 };
 ```
+
+
+## 可击打物体列表
+
+我们添加一个类，用于存储 `hittable` 的列表:
+这里使用了智能指针,接下来会有讲解.
+```cpp
+#include <memory>
+#include <vector>
+
+using std::make_shared; 
+using std::shared_ptr;
+
+class hittable_list : public hittable {
+  public:
+    std::vector<shared_ptr<hittable>> objects; //对象数组
+
+    hittable_list() {}
+    hittable_list(shared_ptr<hittable> object) { add(object); }
+
+    void clear() { objects.clear(); } //清空
+
+    void add(shared_ptr<hittable> object) {
+        objects.push_back(object); //添加元素
+    }
+
+    bool hit(const ray& r, double ray_tmin, double ray_tmax, hit_record& rec) const override {
+        hit_record temp_rec;
+        bool hit_anything = false; 
+        auto closest_so_far = ray_tmax;
+		
+		//遍历所有对象
+		//判断是否和光线相交
+		//closest_so_far变量的作用是对于当前这个光线,我只保留t最小的,也就是离光源最近的点.所以每次调用ray_tmax都是当前最近的t,意思是我只接受比closest_so_far小的t的点.
+		//这里实现了遮挡的逻辑.
+        for (const auto& object : objects) {
+            if (object->hit(r, ray_tmin, closest_so_far, temp_rec)) {
+                hit_anything = true;
+                closest_so_far = temp_rec.t;
+                rec = temp_rec;
+            }
+        }
+
+        return hit_anything;
+    }
+};
+```
+
+
+## C++的一些新特性
