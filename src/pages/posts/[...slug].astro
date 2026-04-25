@@ -23,9 +23,12 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content, headings } = await entry.render();
-
-const { remarkPluginFrontmatter } = await entry.render();
+const { Content, headings, remarkPluginFrontmatter } = await entry.render();
+const updated =
+	remarkPluginFrontmatter.lastModified ??
+	remarkPluginFrontmatter.updated ??
+	entry.data.lastModified ??
+	entry.data.updated;
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -39,6 +42,7 @@ const jsonLd = {
 		url: Astro.site,
 	},
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
+	...(updated && { dateModified: formatDateToYYYYMMDD(new Date(updated)) }),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
 		: siteConfig.lang.replace("_", "-"),
@@ -88,7 +92,7 @@ const jsonLd = {
                 <PostMetadata
                         class="mb-5"
                         published={entry.data.published}
-                        updated={entry.data.updated}
+                        updated={updated && new Date(updated)}
                         tags={entry.data.tags}
                         category={entry.data.category}
                 ></PostMetadata>
