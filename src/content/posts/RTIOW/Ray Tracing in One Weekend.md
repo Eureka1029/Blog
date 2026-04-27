@@ -516,7 +516,7 @@ class sphere : public hittable {
 ## 可击打物体列表
 
 我们添加一个类，用于存储 `hittable` 的列表:
-这里使用了智能指针,接下来会有讲解.
+这里使用了智能指针.
 ```cpp
 #include <memory>
 #include <vector>
@@ -560,4 +560,110 @@ class hittable_list : public hittable {
 ```
 
 
-## C++的一些新特性
+## 常用常量和辅助函数
+
+定义一些数学变量
+
+```cpp
+#ifndef RTWEEKEND_H
+#define RTWEEKEND_H
+
+#include <vector>
+#include <limits>
+
+
+// 常量
+
+const double infinity = std::numeric_limits<double>::infinity(); //正无穷
+const double pi = 3.1415926535897932385; //pi
+
+// 函数
+
+inline double degrees_to_radians(double degrees) {
+    return degrees * pi / 180.0; //角度转为弧度制
+}
+
+// Common Headers
+
+#include "color.h"
+
+#endif
+```
+
+
+将我们新增的东西添加到main函数中
+```cpp {1-5, 29-33, 8-12, 67}
+#include "rtweekend.h"
+
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
+
+
+color ray_color(const ray& r, const hittable & world){
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec)){
+        return 0.5 * (rec.normal + color(1, 1, 1));
+    }
+
+    vec3 unit_direction = unit_vector(r.direction());
+    auto a = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+}
+
+int main() {
+
+    // Image
+    auto aspect_ratio = 16.0/ 9.0; //设置宽高比,这样不需要同时修改高和宽来修改画面大小
+    int image_width = 400;
+
+    //计算高,确保他至少大于等于1.
+    int image_height = int(image_width / aspect_ratio);
+    image_height = (image_height < 1) ? 1 : image_height;
+
+    // 世界
+    hittable_list world;
+
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1),100));
+
+
+    //相机
+    auto focal_length = 1.0; //焦距
+    auto viewport_height = 2.0;
+    auto viewport_width = viewport_height * (double(image_width)/image_height);
+    auto camera_center = point3(0, 0, 0);
+
+    //视口的向量
+    auto viewport_u = vec3(viewport_width, 0, 0);
+    auto viewport_v = vec3(0, -viewport_height, 0);
+
+    //遍历一个像素在视口上的水平和垂直方向的位移
+    auto pixel_delta_u = viewport_u / image_width;
+    auto pixel_delta_v = viewport_v / image_height;
+
+    //计算左上角的像素位置
+    auto viewport_upper_left = camera_center
+                            - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2; //视口左上顶点
+    auto piexl00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v); //第一个像素位置
+
+
+    // Render
+
+    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+    for (int j = 0; j < image_height; ++j) {
+        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+        for (int i = 0; i < image_width; i++) {
+            auto pixel_center = piexl00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+            auto ray_direction = pixel_center - camera_center; //光线方向
+            ray r(camera_center, ray_direction);
+
+            color pixel_color = ray_color(r, world);
+            write_color(std::cout, pixel_color);
+        }
+    }
+
+    std::clog << "\rDone.                 \n";
+}
+```
