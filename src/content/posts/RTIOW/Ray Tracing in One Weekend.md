@@ -667,3 +667,348 @@ int main() {
     std::clog << "\rDone.                 \n";
 }
 ```
+
+结果:
+![](../../../images/截屏2026-04-27%2015.15.24.png)
+
+## 间隔课程
+
+定义了一个区间类
+```cpp
+#ifndef INTERVAL_H
+#define INTERVAL_H
+
+class interval {
+  public:
+    double min, max;
+
+    interval() : min(+infinity), max(-infinity) {} // Default interval is empty
+
+    interval(double min, double max) : min(min), max(max) {}
+
+    double size() const { //区间大小
+        return max - min;
+    }
+
+    bool contains(double x) const { //是否在闭区间内
+        return min <= x && x <= max;
+    }
+
+    bool surrounds(double x) const { // 是否在开区间内
+        return min < x && x < max;
+    }
+
+    static const interval empty, universe;
+};
+
+const interval interval::empty    = interval(+infinity, -infinity);
+const interval interval::universe = interval(-infinity, +infinity);
+
+#endif
+```
+
+# 将移动相机代码移至独立类中.
+
+我们来简化一下main文件,创建一个camera类
+1. 构造光线并将其投射到场景中
+2. 利用这些光线的计算结果来生成渲染图像
+
+在本次重构中，我们将把 `ray_color()` 函数与主程序中的图像、相机和渲染部分合并在一起。新的相机类将包含两个公共方法 `initialize()` 和 `render()` ，以及两个私有辅助方法 `get_ray()`和 `ray_color()` 。
+
+最终，相机将遵循我们能想到的最简单的用法模式：它将通过无参数默认构造，然后拥有者代码通过简单的赋值来修改相机的公共变量，最后通过调用 `initialize()` 函数来初始化所有内容。选择这种模式，是为了避免拥有者需要调用带有大量参数的构造函数，或者定义并调用一大堆设置方法。 相反，拥有代码只需设置其明确关心的部分。最后，我们可以手动让代码调用 `initialize()` ，或者直接让相机在 `render()` 开始时自动调用该函数。我们将采用后者.
+
+
+以下是`camera.h`完整内容
+```cpp
+
+#ifndef CAMERA_H
+#define CAMERA_H
+
+#include "hittable.h"
+
+
+class camera {
+public:
+    double aspect_ratio = 1.0;  // 图像宽高比（宽 / 高）
+    int    image_width  = 100;  // 输出图像宽度（像素）
+
+    void render(const hittable& world) {
+        initialize();
+
+        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+        // 逐行逐列遍历像素并写出颜色。
+        for (int j = 0; j < image_height; j++) {
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            for (int i = 0; i < image_width; i++) {
+                auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+                auto ray_direction = pixel_center - center;
+                ray r(center, ray_direction);
+
+                color pixel_color = ray_color(r, world);
+                write_color(std::cout, pixel_color);
+            }
+        }
+
+        std::clog << "\rDone.                 \n";
+    }
+
+private:
+    int    image_height;   // 输出图像高度（像素）
+    point3 center;         // 相机中心
+    point3 pixel00_loc;    // 左上角第一个像素中心位置
+    vec3   pixel_delta_u;  // 向右一个像素的位移
+    vec3   pixel_delta_v;  // 向下一个像素的位移
+
+    void initialize() {
+        // 根据宽高比计算高度，并保证至少为 1。
+        image_height = int(image_width / aspect_ratio);
+        image_height = (image_height < 1) ? 1 : image_height;
+
+        // 相机位于原点。
+        center = point3(0, 0, 0);
+
+        // 计算视口尺寸。
+        auto focal_length = 1.0;
+        auto viewport_height = 2.0;
+        auto viewport_width = viewport_height * (double(image_width)/image_height);
+
+        // 计算视口水平和竖直方向边向量。
+        auto viewport_u = vec3(viewport_width, 0, 0);
+        auto viewport_v = vec3(0, -viewport_height, 0);
+
+        // 计算像素间在水平和竖直方向的步进向量。
+        pixel_delta_u = viewport_u / image_width;
+        pixel_delta_v = viewport_v / image_height;
+
+        // 计算视口左上角以及首像素中心位置。
+        auto viewport_upper_left =
+            center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
+        pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    }
+
+    color ray_color(const ray& r, const hittable& world) const {
+        hit_record rec;
+
+        // 命中物体时根据法线返回可视化颜色。
+        if (world.hit(r, interval(0, infinity), rec)) {
+            return 0.5 * (rec.normal + color(1,1,1));
+        }
+
+        // 未命中时返回天空渐变背景。
+        vec3 unit_direction = unit_vector(r.direction());
+        auto a = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+    }
+};
+
+#endif
+```
+
+我们可以对main.h内容进行简化了
+```cpp
+#include "rtweekend.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
+#include "camera.h"
+
+
+
+int main() {
+    hittable_list world;
+
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
+
+    camera cam;
+
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width  = 400;
+
+    cam.render(world);
+}
+```
+
+# 抗锯齿
+
+这里的实现思路:以像素为中心,对四个像素(各延伸一半距离)的正方形区域进行采样.  
+(一个像素采样四次取平均)
+
+## 一些随机数工具
+
+返回一个落在$0 <= n < 1$ 范围内的数值
+
+为`rtweekend.h`添加以下内容:
+```cpp
+#include <cstdlib>
+inline double random_double() {
+    return std::rand() / (RAND_MAX + 1.0); // 返回数值处于[0,1)
+}
+
+inline double random_double(double min, double max) {
+    return min + (max - min)*random_double(); //返回数值处于[min,max)
+}
+```
+
+## 使用多重采样生成像素
+
+在像素周围选取多个采样点取平均去计算着色
+
+完整思路:首先，我们将更新 `write_color()` 函数以考虑所使用的采样次数：我们需要计算所有采样点的平均值。为此，我们将每次迭代的完整颜色相加，然后在输出颜色之前，最后进行一次除法（除以采样次数）
+
+
+我们需要确保最后计算出的颜色在正确的`[0,1]`范围内,在`interval.h`添加以下函数
+```cpp
+double clamp(double x) const { //限制数在某一区间内
+	if(x < min) return min;
+	if(x > max) return max;
+	return x;
+}
+```
+
+
+修改write_color函数逻辑
+```cpp
+static const interval intensity(0.000, 0.999);
+int rbyte = int(256 * intensity.clamp(r));
+int gbyte = int(256 * intensity.clamp(g));
+int bbyte = int(256 * intensity.clamp(b));
+```
+
+修改camera类
+```cpp {12, 22-27, 37, 47, 71-85}
+
+#ifndef CAMERA_H
+#define CAMERA_H
+
+#include "hittable.h"
+
+
+class camera {
+public:
+    double aspect_ratio = 1.0;  // 图像宽高比（宽 / 高）
+    int    image_width  = 100;  // 输出图像宽度（像素）
+    int    samples_per_pixel = 10; //一个像素的采样点数量
+    void render(const hittable& world) {
+        initialize();
+
+        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+        // 逐行逐列遍历像素并写出颜色。
+        for (int j = 0; j < image_height; j++) {
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            for (int i = 0; i < image_width; i++) {
+                color pixel_color(0,0,0);
+                for(int sample = 0; sample < samples_per_pixel; sample++){
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, world);
+                }
+                write_color(std::cout, pixel_samples_scale * pixel_color);
+            }
+        }
+
+        std::clog << "\rDone.                 \n";
+    }
+
+private:
+    int    image_height;   // 输出图像高度（像素）
+    point3 center;         // 相机中心
+    double pixel_samples_scale; //所有像素采样点颜色规模因子
+    point3 pixel00_loc;    // 左上角第一个像素中心位置
+    vec3   pixel_delta_u;  // 向右一个像素的位移
+    vec3   pixel_delta_v;  // 向下一个像素的位移
+
+    void initialize() {
+        // 根据宽高比计算高度，并保证至少为 1。
+        image_height = int(image_width / aspect_ratio);
+        image_height = (image_height < 1) ? 1 : image_height;
+
+        pixel_samples_scale = 1.0 / samples_per_pixel;
+
+        // 相机位于原点。
+        center = point3(0, 0, 0);
+
+        // 计算视口尺寸。
+        auto focal_length = 1.0;
+        auto viewport_height = 2.0;
+        auto viewport_width = viewport_height * (double(image_width)/image_height);
+
+        // 计算视口水平和竖直方向边向量。
+        auto viewport_u = vec3(viewport_width, 0, 0);
+        auto viewport_v = vec3(0, -viewport_height, 0);
+
+        // 计算像素间在水平和竖直方向的步进向量。
+        pixel_delta_u = viewport_u / image_width;
+        pixel_delta_v = viewport_v / image_height;
+
+        // 计算视口左上角以及首像素中心位置。
+        auto viewport_upper_left =
+            center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
+        pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    }
+
+    ray get_ray(int i, int j) const {
+        auto offset = sample_square();
+        auto pixel_sample = pixel00_loc
+                            + ((i + offset.x())) * pixel_delta_u
+                            + ((j + offset.y())) * pixel_delta_v; //计算出采样点坐标
+
+        auto ray_origin = center;
+        auto ray_direction = pixel_sample - ray_origin;
+
+        return ray(ray_origin, ray_direction);
+    }
+
+    vec3 sample_square() const { //作用在步长上的偏移系数
+        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+    }
+
+    color ray_color(const ray& r, const hittable& world) const {
+        hit_record rec;
+
+        // 命中物体时根据法线返回可视化颜色。
+        if (world.hit(r, interval(0, infinity), rec)) {
+            return 0.5 * (rec.normal + color(1,1,1));
+        }
+
+        // 未命中时返回天空渐变背景。
+        vec3 unit_direction = unit_vector(r.direction());
+        auto a = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+    }
+};
+
+#endif
+```
+
+效果对比
+![](../../../images/截屏2026-04-27%2017.44.09.png)
+
+
+
+# 漫反射材料
+
+我们这里采用几何和材质分离的方式实现,也就是可以将一种材质分配给多个球体.
+
+
+假设这里表面性质是将接收到的光,随机且均匀地向各个方向散射,光线以相同的概率向任何远离表面的方向散射.
+
+
+实现在vec3类中实现生成随机向量的功能;
+```cpp
+static vec3 random() {
+	return vec3(random_double(), random_double(), random_double());
+}
+
+static vec3 random(double min, double max) {
+	return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
+}
+```
+
+这里的问题是我们生成的任意方向的向量,但是实际上我们只需要表面半球的向量,本书使用了剔除法(不断生成,直到找到一个合格的向量)
+
+1. 在单位球体内生成一个随机向量
+2. 将该向量归一化，使其投影到球面上
+3. 如果归一化向量落在错误的半球上，则对其进行反转
+
