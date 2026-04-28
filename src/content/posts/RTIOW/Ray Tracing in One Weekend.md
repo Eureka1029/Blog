@@ -1148,3 +1148,73 @@ inline void write_color(std::ostream& out, const color& pixel_color) {
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }
 ```
+
+## 金属
+
+## 一个用于材料的抽象类
+
+对于一个材质,我们需要知道的是他吸收多少光,以及反射光是什么.
+
+scatter函数的返回值含义是产不产生散射
+```cpp
+#ifndef MATERIAL_H
+#define MATERIAL_H
+
+#include "hittable.h"
+#include "color.h"
+
+class material {
+    public:
+        virtual ~material() = default;
+
+        virtual bool scatter(
+            const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered
+        ) const {
+            return false;
+        }
+        
+};
+
+#endif
+```
+
+
+在hittable.h添加材质指针的记录
+```cpp
+shared_ptr<material> mat;
+```
+
+当光线击中一个表面（例如某个特定的球体）时， `hit_record` 中的材质指针将被设置为指向该球体在开始时于 `main()` 中创建时所赋予的材质指针。 当 `ray_color()` 例程接收到 `hit_record` 时，它可以调用材质指针的成员函数，以确定是否有光线被散射，以及具体是哪条光线。
+
+```cpp {14,22}
+class sphere : public hittable {
+  public:
+    sphere(const point3& center, double radius) : center(center), radius(std::fmax(0,radius)) {
+        // TODO: Initialize the material pointer `mat`.
+    }
+
+    bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+        ...
+
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        vec3 outward_normal = (rec.p - center) / radius;
+        rec.set_face_normal(r, outward_normal);
+        rec.mat = mat;
+
+        return true;
+    }
+
+  private:
+    point3 center;
+    double radius;
+    shared_ptr<material> mat;
+};
+```
+
+
+## 光散射与反射的建模
+
+albedo(反射率).
+
+朗伯（漫反射）反射率要么总是按照其反射率 R 散射并衰减光线，要么有时（以概率 1−R ）散射光线而不衰减
