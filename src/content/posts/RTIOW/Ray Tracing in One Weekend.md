@@ -1012,3 +1012,139 @@ static vec3 random(double min, double max) {
 2. 将该向量归一化，使其投影到球面上
 3. 如果归一化向量落在错误的半球上，则对其进行反转
 
+
+`[vec3.h]`
+random_unit_vector()函数第一版:  
+实现在单位球中生成一个随机向量,要求这个随机向量必须在单位球内.
+```cpp
+inline vec3 random_unit_vector() {
+    while(true){
+        auto p = vec3::random(-1,1);
+        auto lensq = p.length_squared(); 
+        if(lensq <= 1)
+            return p / sqrt(lensq); //归一化
+    }
+}
+```
+
+
+剔除掉离中心点特别近的点,避免因为精度出现无效向量
+```cpp
+inline vec3 random_unit_vector() {
+    while (true) {
+        auto p = vec3::random(-1,1);
+        auto lensq = p.length_squared();
+        if (1e-160 < lensq && lensq <= 1)
+            return p / sqrt(lensq);
+    }
+}
+```
+
+`[vec3.h]`
+如何剔除? 计算和曲面法线点积!点积为负就进行反转
+```cpp
+inline vec3 random_on_hemisphere(const vec3& normal) {
+    vec3 on_unit_sphere = random_unit_vector();
+    if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return on_unit_sphere;
+    else
+        return -on_unit_sphere;
+}
+```
+
+
+修改`camera.h`
+这里的问题是没有限制子光线的数量
+```cpp {8-11}
+class camera {
+  ...
+  private:
+    ...
+    color ray_color(const ray& r, const hittable& world) const {
+        hit_record rec;
+
+        if (world.hit(r, interval(0, infinity), rec)) {
+            vec3 direction = random_on_hemisphere(rec.normal);
+            return 0.5 * ray_color(ray(rec.p, direction), world);
+        }
+
+        vec3 unit_direction = unit_vector(r.direction());
+        auto a = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+    }
+};
+```
+
+## 限制子射线的数量
+
+只需要在camera设置一个max_depth变量,每次反射都让其减一即可.
+在ray_color中设置终止条件即可.
+
+这里球体的颜色其实是,天空中
+
+
+## 改善阴影痘问题
+
+由于精度问题,求出的交点可能会在表面以下,散射出来的光线又会碰到表面.
+
+我们只需要修改ray_color函数,限定t的范围即可`[camera.h]`
+```cpp {1}
+if (world.hit(r, interval(0.001, infinity), rec)) {
+	vec3 direction = random_on_hemisphere(rec.normal);
+	return 0.5 * ray_color(ray(rec.p, direction),depth-1, world);
+}
+```
+
+这个新增的0.001含义很简单,我希望新射出来的光线与表面的交点不要和我漫反射的交点那么近,否则我认为是阴影痘现象.
+
+
+## 真正的朗伯反射(Lambertian Reflection)
+
+朗伯分布:这种分布将反射光线以与 cos(ϕ) 成正比的方式散射，其中 ϕ 是反射光线与表面法线之间的夹角
+
+实现的改动
+```cpp {2}
+if (world.hit(r, interval(0.001, infinity), rec)) {
+	vec3 direction = rec.normal + random_unit_vector(); //相当于对一个表面向量增加一个随机扰动
+	return 0.5 * ray_color(ray(rec.p, direction),depth-1, world);
+}
+```
+
+更多的光线向法线方向附近反射了
+
+
+## 使用伽马矫正实现准确的色彩饱和度
+
+几乎所有的计算机程序都假设图像在写入图像文件之前已经过“伽马校正”。 这意味着在将 0 到 1 的数值存储为字节之前，这些数值已经过某种变换处理。数据在写入时未经过变换的图像被称为处于线性空间，而经过变换的图像则被称为处于伽马空间。你所使用的图像查看器很可能期望接收的是伽马空间的图像，但我们提供给它的却是线性空间的图像。
+
+
+`color.h` write_color()函数进行伽马矫正
+```cpp {1-6, 13,16}
+inline double linear_to_gamma(double linear_component){
+    if(linear_component > 0)
+        return std::sqrt(linear_component);
+    
+    return 0;
+}
+
+inline void write_color(std::ostream& out, const color& pixel_color) {
+    auto r = pixel_color.x();
+    auto g = pixel_color.y();
+    auto b = pixel_color.z();
+
+    // Apply a linear to gamma transform for gamma 2
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
+
+    // Translate the [0,1] component values to the byte range [0,255].
+    static const interval intensity(0.000, 0.999);
+    int rbyte = int(256 * intensity.clamp(r));
+    int gbyte = int(256 * intensity.clamp(g));
+    int bbyte = int(256 * intensity.clamp(b));
+
+
+    // Write out the pixel color components.
+    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+}
+```
