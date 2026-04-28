@@ -1119,7 +1119,7 @@ if (world.hit(r, interval(0.001, infinity), rec)) {
 
 
 `color.h` write_color()函数进行伽马矫正
-```cpp {1-6, 13,16}
+```cpp {1-6, 13-16}
 inline double linear_to_gamma(double linear_component){
     if(linear_component > 0)
         return std::sqrt(linear_component);
