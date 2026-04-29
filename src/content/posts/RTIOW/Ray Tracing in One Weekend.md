@@ -1218,3 +1218,76 @@ class sphere : public hittable {
 albedo(反射率).
 
 朗伯（漫反射）反射率要么总是按照其反射率 R 散射并衰减光线，要么有时（以概率 1−R ）散射光线而不衰减
+
+```cpp
+
+class lambertian : public material { //朗伯反射模型
+public:
+    lambertian(const color& albedo) : albedo(albedo) {};
+
+    bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
+    const override {
+        auto scatter_direction = rec.normal + random_unit_vector(); // 折射光方向,如果随机生成的向量正好和法向量相反则会产生严重的问题
+
+        if(scatter_direction.near_zero())
+            scatter_direction = rec.normal;
+
+        scattered = ray(rec.p, scatter_direction); //折射光
+        attenuation = albedo;
+        return true;
+    }
+private:
+    color albedo;
+
+};
+```
+
+这里就是朗伯反射的模型.
+反射的方向更多靠近法线,但是会存在问题,因此引入了vec3.h的near.zero()方法,判断向量是否接近于0,来避免产生严重的问题.
+
+
+## 镜面光反射
+
+只要得到了反射向量我们就能够实现镜面反射的效果
+
+![](../../../images/截屏2026-04-29%2020.13.46.png)
+
+反射函数`vec3.h`
+```cpp
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n)*n;
+}
+```
+
+
+金属的镜面反射:
+```cpp
+class metal : public material {
+public:
+    metal(const color& albedo) : albedo(albedo) {}
+bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
+    const override {
+        vec3 reflected = reflect(r_in.direction(), rec.normal); // 镜面反射方向
+        scattered = ray(rec.p, reflected);
+        attenuation = albedo;
+        return true;
+    }
+private:
+    color albedo;
+
+};
+```
+
+
+光线射入空间的主逻辑需要修改
+```cpp
+if (world.hit(r, interval(0.001, infinity), rec)) {
+	ray scattered;
+	color attenuation;
+	if(rec.mat->scatter(r, rec, attenuation, scattered))
+		return attenuation * ray_color(scattered, depth-1, world);
+	return color(0,0,0);
+}
+```
+
+接下来只需要在创建球体的时候赋予一个material(需要修改构造函数),我们就能根据不同的物体给予不同的材质了
