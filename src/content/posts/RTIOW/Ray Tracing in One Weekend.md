@@ -1291,3 +1291,42 @@ if (world.hit(r, interval(0.001, infinity), rec)) {
 ```
 
 接下来只需要在创建球体的时候赋予一个material(需要修改构造函数),我们就能根据不同的物体给予不同的材质了
+
+
+## 模糊的倒影
+
+```cpp
+class metal : public material {
+public:
+    metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
+bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
+    const override {
+        vec3 reflected = reflect(r_in.direction(), rec.normal); // 镜面反射方向
+        reflected = unit_vector(reflected) + (fuzz * random_unit_vector()); //给镜面反射添加一些扰动
+        scattered = ray(rec.p, reflected);
+        attenuation = albedo;
+        return (dot(scattered.direction(), rec.normal) > 0); //判断散射方向是否朝外
+    }
+private:
+    color albedo;
+    double fuzz;
+};
+```
+
+给metal添加一个fuzz变量,用来对镜面反射光线进行扰动,以实现一点磨砂的感觉,  
+fuzz越大扰动的越厉害,fuzz=0说明直接就是镜面反射,  
+我们也需要判断扰动后的的方向是不是还是朝向表面外的.
+
+左边fuzz = 0.3
+右边fuzz = 1.0
+![](../../../images/截屏2026-04-30%2010.47.48.png)
+
+
+# 介电材质
+
+现在我们要处理水和玻璃等既有反射又有反射的材质了.
+
+## 斯涅尔定律
+
+
+
