@@ -103,3 +103,18 @@ albedo : 反射率
 
 
 ![](../../../images/Pasted%20image%2020260506231659.png)
+
+## Isotropic / Anisotropic Materials(BRDFs)
+
+区分材质的方法:
+- 各向同性材质Isotropic
+- 各项异性材质Anisotropic Materials
+
+![](../../../images/Pasted%20image%2020260507153118.png)
+
+
+方位角旋转后不相等-----各向异性
+![](../../../images/Pasted%20image%2020260507153954.png)
+
+
+## 总结BRDF性质
