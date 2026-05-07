@@ -1328,5 +1328,88 @@ fuzz越大扰动的越厉害,fuzz=0说明直接就是镜面反射,
 
 ## 斯涅尔定律
 
+得到折射向量的函数
+```cpp
+//etai_over_etat:折射率之比
+//uv:入射光
+//n:法线
+inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
+    auto cos_theta = std::fmin(dot(-uv, n), 1.0);
+    vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
+    vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+}
+```
 
 
+定义介电材质
+```cpp
+//介电材质
+class dielectric : public material {
+public:
+    dielectric(double refraction_index) : refraction_index(refraction_index) {}
+
+    bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
+    const override {
+        attenuation = color(1.0, 1.0, 1.0);
+        double ri = rec.front_face ? (1.0/refraction_index) : refraction_index; // 从空气射向物体和物体射向空气,求出折射率之比.
+
+        vec3 unit_direction = unit_vector(r_in.direction()); //入射光线归一化
+        vec3 refracted = refract(unit_direction, rec.normal, ri); //折射光线
+
+        scattered = ray(rec.p, refracted);
+        return true;
+    }
+public:
+    double refraction_index;
+};
+```
+
+
+## 全反射
+
+如果入射折射率大于出射折射率,即折射率之比大于1,那么就对入射角有要求,否则无解.
+
+这种现象的现实例子: 如果你垂直看向水面(入射角度小),你就能看到水内的物体,如果你几乎平行看向水面,你就会觉得水面像是镜子(因为光线都被反射了,而非折射).
+
+因此我们需要进行判断.
+
+进行以下修改
+```cpp
+//介电材质
+class dielectric : public material {
+public:
+    dielectric(double refraction_index) : refraction_index(refraction_index) {}
+
+    bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered)
+    const override {
+        attenuation = color(1.0, 1.0, 1.0);
+        double ri = rec.front_face ? (1.0/refraction_index) : refraction_index; // 从空气射向物体和物体射向空气,求出折射率之比.
+
+        vec3 unit_direction = unit_vector(r_in.direction()); // 入射光线归一化
+        double cos_theta = std::fmin(dot(-unit_direction, rec.normal), 1.0); //求出cos
+        double sin_theta = std::sqrt(1.0 - cos_theta*cos_theta);
+
+        bool cannot_refract = ri * sin_theta > 1; // 决定了能不能折射
+        vec3 direction;
+
+        if(cannot_refract){
+            direction = reflect(unit_direction, rec.normal); //反射
+        }else{
+            direction = refract(unit_direction,rec.normal,ri); //折射
+        }
+
+
+        scattered = ray(rec.p, direction); 
+        return true;
+    }
+public:
+    double refraction_index;
+};
+```
+
+修改后结果并不会改变,原因是球体的折射率大于1,也就是空气的折射率,因此我们需要进行修改
+```cpp
+auto material_left = make_shared<dielectric>(1.00 / 1.33);
+```
+![](../../../images/截屏2026-05-07%2011.09.02.png)
